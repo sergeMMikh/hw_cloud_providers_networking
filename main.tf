@@ -5,10 +5,9 @@
 # data "aws_availability_zones" "av_zone" {
 # }
 
-
-# module "network" {
-#   source = "./modules/network"
-# }
+module "network" {
+  source = "./modules/network"
+}
 
 module "instances" {
   source = "./modules/instances"
