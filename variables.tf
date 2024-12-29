@@ -18,7 +18,7 @@ variable "secret_key" {
 
 variable "key_name" {
   type        = string
-  description = "The Key pair name"
+  description = "The SSH Key pair name"
   sensitive   = true
 }
 
