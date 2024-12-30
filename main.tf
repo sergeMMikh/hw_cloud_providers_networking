@@ -18,10 +18,9 @@ module "instances" {
   Project                 = var.Project
   Platform                = var.Platform
 
-
-  # public_subnet_id  = module.network.public_subnet_id
-  # private_subnet_id = module.network.private_subnet_id
-  # security_group_id = module.network.security_group_id
+  public_subnet_id  = module.network.public_subnet_id
+  private_subnet_id = module.network.private_subnet_id
+  security_group_id = module.network.security_group_id
 }
 
 output "instances_info" {

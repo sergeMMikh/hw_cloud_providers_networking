@@ -21,11 +21,8 @@ resource "aws_instance" "public_vm" {
 
   key_name = var.key_name
 
-
-  #   subnet_id                   = aws_default_subnet.develop.id
-  #   associate_public_ip_address = true
-
-  #   availability_zone = data.aws_availability_zones.av_zone.names[0]
+  subnet_id                   = var.public_subnet_id
+  associate_public_ip_address = true
 
   tags = {
     Name     = " public-${count.index + 1}"
@@ -34,7 +31,29 @@ resource "aws_instance" "public_vm" {
     Platform = var.Platform
   }
 
-  #   vpc_security_group_ids = [
-  #     aws_security_group.example.id,
-  #   ]
+  vpc_security_group_ids = [
+    var.security_group_id,
+  ]
+}
+
+resource "aws_instance" "private_vm" {
+  count         = 1
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.vm_public_instance_type
+
+  key_name = var.key_name
+
+  subnet_id = var.private_subnet_id
+
+  tags = {
+    Name     = " private-${count.index + 1}"
+    Owner    = var.Owner
+    Project  = var.Project
+    Platform = var.Platform
+  }
+
+  vpc_security_group_ids = [
+    var.security_group_id,
+  ]
+
 }
