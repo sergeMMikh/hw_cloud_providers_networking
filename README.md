@@ -4,31 +4,8 @@
 Так как я фактически нахожусь в недружественной Европе, то сталкиваюсь с проблемой ограничения на использование платных ресурсов Yandex Cloud. Таким образом могу выполнить только второе задание с исполоьзованием ресурса Anazon AWS.
 
 ---
-### Задание 1. Yandex Cloud 
 
-**Что нужно сделать**
-
-1. Создать пустую VPC. Выбрать зону.
-2. Публичная подсеть.
-
- - Создать в VPC subnet с названием public, сетью 192.168.10.0/24.
- - Создать в этой подсети NAT-инстанс, присвоив ему адрес 192.168.10.254. В качестве image_id использовать fd80mrhj8fl2oe87o4e1.
- - Создать в этой публичной подсети виртуалку с публичным IP, подключиться к ней и убедиться, что есть доступ к интернету.
-3. Приватная подсеть.
- - Создать в VPC subnet с названием private, сетью 192.168.20.0/24.
- - Создать route table. Добавить статический маршрут, направляющий весь исходящий трафик private сети в NAT-инстанс.
- - Создать в этой приватной подсети виртуалку с внутренним IP, подключиться к ней через виртуалку, созданную ранее, и убедиться, что есть доступ к интернету.
-
-Resource Terraform для Yandex Cloud:
-
-- [VPC subnet](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/vpc_subnet).
-- [Route table](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/vpc_route_table).
-- [Compute Instance](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/compute_instance).
-
----
-### Задание 2. AWS* (задание со звёздочкой)
-
-Это необязательное задание. Его выполнение не влияет на получение зачёта по домашней работе.
+### Задание 2. AWS
 
 **Что нужно сделать**
 
@@ -60,3 +37,41 @@ Resource Terraform:
 Домашняя работа оформляется в своём Git репозитории в файле README.md. Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
 Файл README.md должен содержать скриншоты вывода необходимых команд, а также скриншоты результатов.
 Репозиторий должен содержать тексты манифестов или ссылки на них в файле README.md.
+
+---
+
+**Решение**
+
+Список инстансов до начала выполнения задания.</br>
+<img src="images/Task_0.png" alt="Task_0.png" width="700" height="auto">
+ 
+1. Создал пустую VPC с подсетью 10.10.0.0/16. 
+
+Результат запуска `terraform apply`</br>
+<img src="images/Task_2_1.png" alt="Task_2_1.png" width="500" height="auto">
+
+Как видно, *public_vm* ВМ имеет публичный адрес 18.185.110.182, в отличии от *private_vm*.
+
+Instance list на Amazon:</br>
+<img src="images/Task_2_2.png" alt="Task_2_2.png" width="700" height="auto">
+
+В списке security groups появилась MySecurityGroup.</br>
+<img src="images/Task_2_3.png" alt="Task_2_3.png" width="700" height="auto">
+
+MySecurityGroup асоциирована с MyVPC. </br>
+<img src="images/Task_2_4.png" alt="Task_2_4.png" width="700" height="auto">
+
+Характеристики и карта сети MyVPC:</br>
+<img src="images/Task_2_5.png" alt="Task_2_5.png" width="700" height="auto">
+
+Подключение к *public_vm* через её публичный адрес с использованием ssh ключа: </br>
+<img src="images/Task_2_6.png" alt="Task_2_6.png" width="500" height="auto">
+
+Проверка подключения к интернету: </br>
+<img src="images/Task_2_7.png" alt="Task_2_7.png" width="550" height="auto">
+
+Подключение к *private_vm* через её публичный адрес с использованием ssh ключа: </br>
+<img src="images/Task_2_8.png" alt="Task_2_8.png" width="500" height="auto">
+
+Проверка подключения *private_vm* к интернету: </br>
+<img src="images/Task_2_9.png" alt="Task_2_9.png" width="550" height="auto">
