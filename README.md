@@ -45,7 +45,24 @@ Resource Terraform:
 Список инстансов до начала выполнения задания.</br>
 <img src="images/Task_0.png" alt="Task_0.png" width="700" height="auto">
  
-1. Создал пустую VPC с подсетью 10.10.0.0/16. 
+1. Создал пустую VPC [*MyVPC*](modules/network/main.tf) с подсетью 10.10.0.0/16. 
+2. Создал публичную подсеть *public*
+- Разрешил в этой subnet присвоение public IP по-умолчанию: `map_public_ip_on_launch = true`
+- Создал Internet gateway *igw*
+- Добавил в таблицу маршрутизации *aws_route_table public* маршрут, направляющий весь исходящий трафик в Internet gateway: `gateway_id = aws_internet_gateway.igw.id`
+- Создал security group *default* с разрешающими правилами на SSH и ICMP. Привязал эту security group на все, создаваемые в этом ДЗ, [виртуалки](modules/instances/main.tf).
+- Создал в этой подсети виртуалку *public_vm* и убедиться, что инстанс имеет публичный IP (скриншот ниже). Подключиться к ней, убедиться, что есть доступ к интернету (скриншот ниже).
+- Добавил NAT gateway [*aws_nat_gateway nat*](modules/network/main.tf) в public subnet.
+3. Приватная подсеть.
+- Создал в VPC subnet с названием [*private*](modules/network/main.tf), сетью 10.10.2.0/24.
+- Создал отдельную таблицу маршрутизации *aws_route_table private* и привязал её к private подсети *aws_route_table_association private*.
+- Добавил Route, направляющий весь исходящий трафик private сети в NAT `route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }`.
+- Создал виртуалку [*private_vm*](modules/instances/main.tf) в приватной сети.
+- Подключился к ней по SSH по приватному IP через виртуалку, созданную ранее в публичной подсети (скриншот ниже), и убедился, что с виртуалки есть выход в интернет (скриншот ниже).
+
 
 Результат запуска `terraform apply`</br>
 <img src="images/Task_2_1.png" alt="Task_2_1.png" width="500" height="auto">
