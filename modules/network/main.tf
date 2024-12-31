@@ -8,19 +8,6 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_subnet" "public" {
-  vpc_id = aws_vpc.main.id
-
-  cidr_block = "10.10.1.0/24"
-
-  map_public_ip_on_launch = true
-  availability_zone       = "eu-central-1a"
-
-  tags = {
-    Name = "PublicSubnet"
-  }
-}
-
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
@@ -29,9 +16,23 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
+resource "aws_subnet" "public" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.10.1.0/24"
+
+  map_public_ip_on_launch = true
+
+  availability_zone = "eu-central-1a"
+
+  tags = {
+    Name = "PublicSubnet"
+  }
+}
+
 resource "aws_subnet" "private" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.10.2.0/24"
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.10.2.0/24"
+
   availability_zone = "eu-central-1a"
 
   tags = {
@@ -57,6 +58,12 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
+
+resource "aws_eip" "nat" {
+  vpc = true
+}
+
+
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public.id
@@ -64,10 +71,6 @@ resource "aws_nat_gateway" "nat" {
   tags = {
     Name = "MyNATGateway"
   }
-}
-
-resource "aws_eip" "nat" {
-  vpc = true
 }
 
 resource "aws_route_table" "private" {
